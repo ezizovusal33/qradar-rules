@@ -7,8 +7,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 QRADAR_IP = os.getenv("QRADAR_IP")
 QRADAR_TOKEN = os.getenv("QRADAR_TOKEN")
 
-# Düzgün QRadar Analytics Rules API endpoint-i
-url = f"https://{QRADAR_IP}/api/analytics/rules"
+# Düzgün QRadar Configuration Analytics Rules API endpoint-i
+url = f"https://{QRADAR_IP}/api/config/analytics/rules"
 headers = {
     "SEC": QRADAR_TOKEN,
     "Content-Type": "application/xml",
