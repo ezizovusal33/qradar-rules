@@ -1,43 +1,49 @@
-import os
-import requests
-import urllib3
+import os, sys, time, zipfile, json, glob, requests, urllib3
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+urllib3.disable_warnings()
 
-QRADAR_IP = os.getenv("QRADAR_IP")
-QRADAR_TOKEN = os.getenv("QRADAR_TOKEN")
+HOST  = os.environ["QRADAR_IP"]
+TOKEN = os.environ["QRADAR_TOKEN"]
+BASE  = f"https://{HOST}/api"
+H = {"SEC": TOKEN, "Version": "19.0", "Accept": "application/json"}
 
-# Düzgün QRadar Configuration Analytics Rules API endpoint-i
-url = f"https://{QRADAR_IP}/api/config/analytics/rules"
-headers = {
-    "SEC": QRADAR_TOKEN,
-    "Content-Type": "application/xml",
-    "Accept": "application/json"
-}
+def build_package(rules_dir="qradar/rules", out="build/soc_custom_rules.zip"):
+    os.makedirs("build", exist_ok=True)
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+        for f in glob.glob(f"{rules_dir}/*.xml"):
+            z.write(f, arcname=os.path.basename(f))
+        z.write("qradar/manifest.json", arcname="manifest.json")
+    return out
 
-success_count = 0
-fail_count = 0
+def upload(zip_path):
+    with open(zip_path, "rb") as fh:
+        r = requests.post(f"{BASE}/config/extension_management/extensions",
+                          headers=H, files={"file": fh}, verify=False)
+    if r.status_code not in (200, 201, 202):
+        sys.exit(f"[!] Upload xətası {r.status_code}: {r.text}")
+    return r.json()["id"]
 
-if os.path.exists('rules'):
-    for root, dirs, files in os.walk('rules'):
-        for file in files:
-            if file.endswith('.xml'):
-                file_path = os.path.join(root, file)
-                
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    xml_data = f.read()
-                
-                response = requests.post(url, headers=headers, data=xml_data.encode('utf-8'), verify=False)
-                
-                if response.status_code in [200, 201, 202]:
-                    print(f"[+] Uğurla deploy olundu: {file}")
-                    success_count += 1
-                else:
-                    print(f"[!] Xəta ({file}) - Status Code: {response.status_code}")
-                    print(f"    Response: {response.text}")
-                    fail_count += 1
+def install(ext_id):
+    r = requests.post(f"{BASE}/config/extension_management/extensions/{ext_id}",
+                      headers=H, params={"overwrite": "true", "status": "INSTALLED"},
+                      verify=False)
+    if r.status_code not in (200, 201, 202):
+        sys.exit(f"[!] Install xətası {r.status_code}: {r.text}")
+    return r.json()
 
-print(f"\nDeploy yekunlaşdı. Uğurlu: {success_count}, Xətalı: {fail_count}")
-
-if fail_count > 0:
-    exit(1)
+if __name__ == "__main__":
+    z = build_package()
+    ext_id = upload(z)
+    print(f"[+] Upload OK, extension id = {ext_id}")
+    print("[+] Install:", install(ext_id))
+    
+    # Qaydaların aktivləşdirilməsi (enable)
+    try:
+        rules = requests.get(f"{BASE}/analytics/rules", headers=H, verify=False,
+                             params={"filter": "name ILIKE 'SOC -%'"}).json()
+        for r in rules:
+            requests.post(f"{BASE}/analytics/rules/{r['id']}", headers=H, verify=False,
+                          json={"enabled": True})
+            print("enabled:", r["name"])
+    except Exception as e:
+        print(f"[!] Rule status yenilənərkən xəta: {e}")
