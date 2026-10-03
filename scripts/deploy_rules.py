@@ -7,8 +7,8 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 QRADAR_IP = os.getenv("QRADAR_IP")
 QRADAR_TOKEN = os.getenv("QRADAR_TOKEN")
 
-# QRadar Rule Management API endpoint
-url = f"https://{QRADAR_IP}/api/config/ame/rules"
+# Düzgün QRadar Analytics Rules API endpoint-i
+url = f"https://{QRADAR_IP}/api/analytics/rules"
 headers = {
     "SEC": QRADAR_TOKEN,
     "Content-Type": "application/xml",
@@ -27,7 +27,6 @@ if os.path.exists('rules'):
                 with open(file_path, 'r', encoding='utf-8') as f:
                     xml_data = f.read()
                 
-                # QRadar-a tək-tək POST sorğusu göndəririk
                 response = requests.post(url, headers=headers, data=xml_data.encode('utf-8'), verify=False)
                 
                 if response.status_code in [200, 201, 202]:
