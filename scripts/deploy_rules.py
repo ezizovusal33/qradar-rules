@@ -1,4 +1,4 @@
-import os, sys, time, zipfile, json, glob, requests, urllib3
+import os, sys, zipfile, glob, requests, urllib3
 
 urllib3.disable_warnings()
 
@@ -13,6 +13,7 @@ def build_package(rules_dir="qradar/rules", out="build/soc_custom_rules.zip"):
         for f in glob.glob(f"{rules_dir}/*.xml"):
             z.write(f, arcname=os.path.basename(f))
         z.write("qradar/manifest.json", arcname="manifest.json")
+    print(f"[+] ZIP paketi uğurla yaradıldı: {out}")
     return out
 
 def upload(zip_path):
@@ -21,7 +22,9 @@ def upload(zip_path):
                           headers=H, files={"file": fh}, verify=False)
     if r.status_code not in (200, 201, 202):
         sys.exit(f"[!] Upload xətası {r.status_code}: {r.text}")
-    return r.json()["id"]
+    ext_id = r.json()["id"]
+    print(f"[+] Extension uğurla yükləndi. ID: {ext_id}")
+    return ext_id
 
 def install(ext_id):
     r = requests.post(f"{BASE}/config/extension_management/extensions/{ext_id}",
@@ -29,21 +32,21 @@ def install(ext_id):
                       verify=False)
     if r.status_code not in (200, 201, 202):
         sys.exit(f"[!] Install xətası {r.status_code}: {r.text}")
+    print("[+] Extension uğurla quraşdırıldı (INSTALLED).")
     return r.json()
 
 if __name__ == "__main__":
     z = build_package()
     ext_id = upload(z)
-    print(f"[+] Upload OK, extension id = {ext_id}")
-    print("[+] Install:", install(ext_id))
+    install(ext_id)
     
-    # Qaydaların aktivləşdirilməsi (enable)
+    # Qaydaların (rules) aktivləşdirilməsi (enable)
     try:
         rules = requests.get(f"{BASE}/analytics/rules", headers=H, verify=False,
                              params={"filter": "name ILIKE 'SOC -%'"}).json()
         for r in rules:
             requests.post(f"{BASE}/analytics/rules/{r['id']}", headers=H, verify=False,
                           json={"enabled": True})
-            print("enabled:", r["name"])
+            print(f"[+] Aktivləşdirildi: {r['name']}")
     except Exception as e:
         print(f"[!] Rule status yenilənərkən xəta: {e}")
