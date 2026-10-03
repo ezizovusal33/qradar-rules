@@ -23,7 +23,7 @@ print(f"[+] {zip_filename} uğurla yaradıldı.")
 url = f"https://{QRADAR_IP}/api/config/extension_management/extensions"
 headers = {
     "SEC": QRADAR_TOKEN,
-    "Content-Type": "application/octet-stream"
+    "Content-Type": "application/zip"
 }
 
 with open(zip_filename, 'rb') as f:
