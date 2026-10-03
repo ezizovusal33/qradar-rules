@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom_rule name="SOC - AD - User Added To Privileged Group" enabled="true" severity="9" credibility="8" relevance="8">
+    <description>Kritik qruplara (Domain Admins, Administrators) yeni üzv əlavə edilməsi.</description>
+    <category>Privilege Escalation / Unauthorized Access</category>
+    <tests>
+        <test type="QID_TEST" qids="4728,4732,4756"/>
+    </tests>
+    <action index_by="Username" create_offense="true"/>
+</custom_rule>

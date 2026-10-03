@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom_rule name="SOC - DEFENSE_EVASION - Audit Log Cleared" enabled="true" severity="10" credibility="9" relevance="9">
+    <description>Windows Security log fayllarının təmizlənməsi və ya silinməsi.</description>
+    <category>Defense Evasion / Log Clearing</category>
+    <tests>
+        <test type="QID_TEST" qids="1102"/>
+    </tests>
+    <action index_by="Username" create_offense="true"/>
+</custom_rule>

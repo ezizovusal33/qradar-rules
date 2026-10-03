@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom_rule name="SOC - AUTH - Brute Force Followed By Successful Login" enabled="true" severity="8" credibility="8" relevance="7">
+    <description>Uğursuz cəhdlərdən dərhal sonra həmin hesab ilə uğurlu girişin baş verməsi.</description>
+    <category>Authentication / Compromised Account</category>
+    <tests>
+        <test type="SEQUENCE" rule_a="SOC - AUTH - Potential Brute Force Attack from Single IP" rule_b="4624"/>
+    </tests>
+    <action index_by="Username" create_offense="true"/>
+</custom_rule>

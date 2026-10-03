@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom_rule name="SOC - AUTH - Multiple Account Lockouts from Single Source" enabled="true" severity="8" credibility="7" relevance="7">
+    <description>Eyni mənbə IP-dən bir neçə fərqli hesabın bloklanması (Password Spraying).</description>
+    <category>Authentication / Account Lockout Spraying</category>
+    <tests>
+        <test type="THRESHOLD" qids="4740" count="5" timeframe="180" group_by="Source IP"/>
+    </tests>
+    <action index_by="Source IP" create_offense="true"/>
+</custom_rule>

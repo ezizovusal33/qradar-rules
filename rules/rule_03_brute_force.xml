@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom_rule name="SOC - AUTH - Potential Brute Force Attack from Single IP" enabled="true" severity="7" credibility="7" relevance="7">
+    <description>Eyni mənbə IP ünvanından qısa müddətdə çoxsaylı uğursuz autentifikasiya cəhdləri.</description>
+    <category>Authentication / Brute Force</category>
+    <tests>
+        <test type="THRESHOLD" qids="4625" count="10" timeframe="300" group_by="Source IP"/>
+    </tests>
+    <action index_by="Source IP" create_offense="true"/>
+</custom_rule>

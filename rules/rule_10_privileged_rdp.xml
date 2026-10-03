@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom_rule name="SOC - INITIAL_ACCESS - Privileged Logon Outside Working Hours or via RDP" enabled="true" severity="8" credibility="7" relevance="8">
+    <description>Admin hesabının qeyri-iş saatlarında və ya RDP (Logon Type 10) ilə giriş etməsi.</description>
+    <category>Authentication / Anomalous Privileged Logon</category>
+    <tests>
+        <test type="QID_TEST" qids="4624" logon_type="10"/>
+    </tests>
+    <action index_by="Username" create_offense="true"/>
+</custom_rule>

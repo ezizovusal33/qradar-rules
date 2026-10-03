@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom_rule name="SOC - PERSISTENCE - New Scheduled Task Created" enabled="true" severity="6" credibility="7" relevance="6">
+    <description>Davamlılıq məqsədilə yeni planlaşdırılmış tapşırığın yaradılması.</description>
+    <category>Persistence / Scheduled Task Created</category>
+    <tests>
+        <test type="QID_TEST" qids="4698"/>
+    </tests>
+    <action index_by="Username" create_offense="true"/>
+</custom_rule>

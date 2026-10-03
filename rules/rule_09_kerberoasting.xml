@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom_rule name="SOC - CREDENTIAL_ACCESS - Potential Kerberoasting Activity" enabled="true" severity="8" credibility="8" relevance="7">
+    <description>RC4 şifrələmə tipi ilə yüksək tezlikdə SPN ticket sorğularının edilməsi.</description>
+    <category>Credential Access / Kerberoasting</category>
+    <tests>
+        <test type="QID_TEST" qids="4769" encryption_type="0x17"/>
+    </tests>
+    <action index_by="Username" create_offense="true"/>
+</custom_rule>

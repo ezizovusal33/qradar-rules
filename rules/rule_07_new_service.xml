@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom_rule name="SOC - PERSISTENCE - New Windows Service Installed" enabled="true" severity="7" credibility="7" relevance="7">
+    <description>Sistemdə yeni Windows xidmətinin qeydiyyatdan keçirilməsi (Persistence).</description>
+    <category>Persistence / New Service Created</category>
+    <tests>
+        <test type="QID_TEST" qids="4697,7045"/>
+    </tests>
+    <action index_by="Username" create_offense="true"/>
+</custom_rule>

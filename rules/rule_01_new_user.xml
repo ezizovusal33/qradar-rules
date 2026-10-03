@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<custom_rule name="SOC - AD - New User Account Created" enabled="true" severity="5" credibility="7" relevance="5">
+    <description>Yerli və ya domen səviyyəsində yeni istifadəçi hesabının yaradılması.</description>
+    <category>Authentication / User Account Added</category>
+    <tests>
+        <test type="QID_TEST" qids="4720"/>
+    </tests>
+    <action index_by="Username" create_offense="true"/>
+</custom_rule>
